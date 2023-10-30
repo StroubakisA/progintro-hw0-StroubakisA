@@ -22,7 +22,7 @@ int main(int argc, char* argv[]){
 	
 	if(argc!=3){
 		
-		printf("Number of arguments error!!!\n");
+		printf("Number of arguments error!\n");
 		return 0;	
 		
 	}
