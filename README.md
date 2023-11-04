@@ -1,5 +1,7 @@
 # progintro-hw0-StroubakisA
 
+Εξηγώ με ποιον τρόπο πέρασα τα επίπεδα στην Άσκηση 2.
+
 Το αρχικό password δίνεται. Οπότε έχουμε την λύση στο bandit0
 
 bandit0: bandit0
