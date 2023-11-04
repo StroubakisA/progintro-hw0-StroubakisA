@@ -1,1 +1,1 @@
-Test
+bandit0: bandit0
