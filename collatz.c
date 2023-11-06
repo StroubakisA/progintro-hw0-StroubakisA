@@ -3,12 +3,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
-
+#include <string.h>
 
 int main(int argc, char* argv[]){
 	
-	register long N;
+	register long long N;
 
 	register int i;
 	register int count;
@@ -16,13 +15,14 @@ int main(int argc, char* argv[]){
 	// Δυναμικός πίνακας στον οποίο θα αποθηκεύονται τα μήκη που έχουν υπολογιστεί
 	register short * lengths;
 	
+	register short length;
+	
 	register int end,max; // Οι δυο αριθμοί που δίνει ο χρήστης.
 	int start;
-	
-	
+		
 	if(argc!=3){
 		
-		printf("Number of arguments error!\n");
+		printf("Number of arguments error\n");
 		return 0;	
 		
 	}
@@ -38,32 +38,32 @@ int main(int argc, char* argv[]){
 		return 0;
 	}
 	
-	// Μηδενίζουμε όλες τις θέσεις του πίνακα 
-	for(i=0;i<=end;i++)
-		lengths[i]=0;
+	// Μηδενίζουμε όλες τις θέσεις του πίνακα lengths ()  
+	memset(lengths,0,(end+1)*sizeof(short));
 		
 	if(start>end)
 		return 0;
 	max=0;
 	
-	for(i=start;i<=end;i++){
-
+	for(i=1;i<=end;i+=2){
+		
 		N=i;
 		count=1;
 		while(N!=1){
 			
 			// Συμπλήρωση κώδικα: Στην αρχή κάθε γύρου, ελέγχεται αν έχει υπολογιστεί ήδη το μήκος Ν
 			if(N<=end){
-				if(lengths[N]!=0){
+				length=lengths[N];
+				if(length!=0){
 					// Aν έχει υπολογιστεί ήδη, τότε απλά προστίθεται στο τρέχον, αφαιρείται το 1 και το Loop σπάει 
-					count+=lengths[N]-1;
+					count+=length-1;
 					break;		
 					
 				}
 			}
 						
-			if(N%2==1)
-				N=N+N+N+1;
+			if((N&1)==1)
+				N=N+(N<<1)+1;
 			else
 				N=N>>1;
 			count=count+1;
@@ -72,6 +72,13 @@ int main(int argc, char* argv[]){
 		
 		// Κάθε φορά που υπολογίζεται ένα νέο μήκος ενημερώνεται ο πίνακας 
 		lengths[i]=count;
+		
+		if(count>max)
+			max=count;
+				
+		count=lengths[(i+1)>>1]+1;
+		
+		lengths[i+1]=count;
 		
 		if(count>max)
 			max=count;
