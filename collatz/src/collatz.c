@@ -3,30 +3,30 @@
 
 int main(int argc, char* argv[]){
 	
-	// Ο αριθμός ο οποίος προκύπτει σε κάθε επανάληψη του τύπου collatz
+	//  O ariumos o opoios prokuptei se kaue epanalhpsh toy typoy collatz
 	register unsigned long long N;
 	
-	// Αριθμοδείκτης
+	// Ariumodeikths
 	register int unsigned i;
 	
-	// Μετρητής
+	// metrhths
 	register unsigned int count;
 	
-	// Δυναμικός πίνακας στον οποίο θα αποθηκεύονται τα μήκη που έχουν υπολογιστεί
+	// Dynamikos piankas ston opoio ua apouhkeuontai ta mhkh poy exoyn upologistei 
 	register unsigned short * lengths;
 	
-	// Βοηθητικός δείκτης
+	// bohuitikos deikths
 	register unsigned short * length_ptr;
 		
 		
-	register unsigned int end; // Οι δυο αριθμοί που δίνει ο χρήστης.
+	register unsigned int end; // oi duo ariumoi poy dinei o xrhsths.
 	unsigned int start;
-	register unsigned int max; // To ζητούμενο μέγιστο
+	register unsigned int max; // To zhtoumeno megisto
 	
-	// Βήμαελέγχου μεγίστου
+	// bhma elegxoy megistoy
 	register int step;
 	
-	// Έλεγχος πλήθους ορισμάτων	
+	//Elegxos plhuoys orismatwn	
 	if(argc!=3){
 		
 		printf("Number of arguments error\n");
@@ -34,80 +34,80 @@ int main(int argc, char* argv[]){
 		
 	}
 	
-	// Μετατροπή σε ακέραιους
+	// Metatroph se akeraioys
 	start=atoi(argv[1]);
 	end=atoi(argv[2]);
 	
-	// Αν ο τελικός αριθμός είναι περιττός, τον αυξάνουμε κατά 1
-	// (Το αποτέλεσμα δεν αλλάζει και βολεύει στις πράξεις)
+	// An o telikos ariumos einai perittos,ton ayjanoyme kata 1
+	// (To apotelesma den allazei kai boleyei stis prajeis)
 	if(end&1)
 		end++;
 
-	// Δεσμεύεται πίνακας για τα μήκη
+	// Desmeuetai pinakas gia ta mhkh
 	lengths = malloc((end+1)*sizeof(short));
 	
-	// Για i=1 το μήκος είναι 1 και για i=2 το μήκος είναι 2
+	// gia i=1 to mhkos einai 1 kai gia i=2 to mhkos einai 2
 	lengths[1]=1;
 	lengths[2]=2;
 	
-	// Αρχικοποίηση του i για την επαναληπτική εφαρμογή
+	//Arxikopoihsh toy i gia th epanalhptikh efarmogh
 	i=3;
 	
-	// Η επαναληπτική εφαρμογή θα φτάσει μέχρι περιττό
+	// H epanalhptikh efarmogh ua ftasei mexri peritto
 	end++;	
 	
 	while(i!=end){
-	// Στην αρχή του while, το i είναι περιττό.
+	// Sthn arxh toy while,to i einai peritto.
 	
-		// Το Ν αρχικοποιείται σε αυτό...
+		// To n arxikopoieitai se ayto...
 		N=i;
 		
-		// ...και ο μετρητής αρχικοποιείται στο 0.
+		// ...kai ο metrhths arxikopoieitai sto 0.
 		count=0;
 		do{
 			
-			// Ο μετρητής αυξάνεται κατά 1
+			// O metrhths aujanetai kata 1
 			count++;	
 			
-			// Αν το Ν είναι περιττό, τότε τίθεται Ν=3*Ν+1 και συνεχίζει το loop
+			// An to n einai peritto,tote tiuetai  Ν=3*Ν+1 kai sunexizei to loop
 			if(N&1){
 				N = (N << 1)+N+1;
 		
 				continue;				
 			}				
 			
-			// Διαφορετικά τίθεται Ν=Ν/2
+			// Diaforetika tiuetai Ν=Ν/2
 			N=N>>1;
 						
-		// Αν το Ν γίνει μικρότερο του i δεν χρειάζεται να προχωρήσουν οι υπολογισμοί
-		// γιατί το μήκος της "υπόλοιπης διαδρομής" είναι γνωστό.		
+		// An to N ginei mikrotero tou i den xreiazetai na proxvrhsoun oi upologismoi
+		// giati to mhkos ths "ulopoihshs diadromhs"einai gnwsto.		
 		}while(N>i);
 		
-		// Προστίθεται το υπόλοιπο μήκος της διαδρομής και προκύπτει το μήκος για το i.
-		// Παράλληλα το i αυξάνεται κατά 1.
+		// Prostiuetai to upoloipo mhkos ths diadromhs kai prokuptei to mhkos gia to i
+		// Parallhla to i aujanetai kata 1.
 		lengths[i++]=count+lengths[N];
 
-		// Το i τώρα είναι άρτιο. 
-		// Η διαδρομή του έχει μήκος κατά 1 μεγαλύτερο από το μήκος της διαδρομής του i/2 
+		// To i twra einai artio 
+		// H diadromh tou exei mhkos kata 1 megalytero apo to mhkos ths diadromhs toy i/2
 		lengths[i]=lengths[(i)>>1]+1;
 		
-		// Το i αυξάνεται κατα 1 και γίνεται πάλι περιττό.
+		// To i aujanetai kata 1 kai ginetai pali peritto.
 		i++;
 
 	}
-	// Αποκατάσταση του end
+	// Apokatstash toy end
 	end--;
 	
-	// To μέγιστο μήκος θα ανήκει σε αριθμό σίγουρα μεγαλύτερο του end/3
+	// To megisto mhkos ua anhkei se ariumo sigoura megaluyero toy end/3
 	i=end/3;
 	
-	// Aν όμως το start είναι ακόμα μεγαλύτερο τότε η εκκίνηση εντοπισμού του μεγίστου 
-	// μήκους θα γίνει από αυτό.  
+	// An omws to start einai akoma megalutero tote h ekkinhsh entopismoy toy megisoty 
+	// mhkous ua ginei apo ayto.  
 	if(start>i)
 		i=start;
 	
-	// Αν το i είναι άρτιο αυξάνεται κατα 1. Η εκκίνηση εντοπισμού συμφέρει να γίνει από 
-	// περιττό.
+	// An to i einai artio aujanetai kata 1.H ekkinhsh entopismou sumferei na ginei apo 
+	// peritto.
 	if(!(i&1))
 		i++;
 	
@@ -115,7 +115,7 @@ int main(int argc, char* argv[]){
 	lengths+=end+1;	
 	max=0;
 	
-	// Για μεγάλο end ελέγχονται μόνο οι περιττοί
+	// Gia megalo end elegxontai mono oi perittoi 
 	if(end>10000)
 		step=2;
 	else
@@ -130,10 +130,10 @@ int main(int argc, char* argv[]){
 			
 	}
 	
-	// Τυπώνεται το μέγιστο μήκος
+	// Tupwnetai to megisto mhkos
 	printf("%d\n",max);
 	
-	// Απελευθέρωση μνήμης
+	// Apeleuuerwsh mnhmhs
 	lengths-=end+1;
 	free(lengths);
 	
