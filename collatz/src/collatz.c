@@ -3,7 +3,7 @@
 
 int main(int argc, char* argv[]){
 	
-	// Ο αριθμός που προκύπτει σε κάθε επανάληψη του τύπου collatz
+	// Ο αριθμός ο οποίος προκύπτει σε κάθε επανάληψη του τύπου collatz
 	register unsigned long long N;
 	
 	// Αριθμοδείκτης
