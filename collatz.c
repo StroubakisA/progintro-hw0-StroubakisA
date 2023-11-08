@@ -1,25 +1,32 @@
-/* Ακόμα καποιες βελτιώσεις είναι να ο πίνακας Lengths να είναι short (πιο μικρός) 
-και να ζητήσουμε και άλλους registers */
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 int main(int argc, char* argv[]){
 	
-	register long long N;
-
-	register int i;
-	register int count;
+	// Ο αριθμός που προκύπτει σε κάθε επανάληψη του τύπου collatz
+	register unsigned long long N;
+	
+	// Αριθμοδείκτης
+	register int unsigned i;
+	
+	// Μετρητής
+	register unsigned int count;
 	
 	// Δυναμικός πίνακας στον οποίο θα αποθηκεύονται τα μήκη που έχουν υπολογιστεί
-	register short * lengths;
+	register unsigned short * lengths;
 	
-	register short length;
-	
-	register int end,max; // Οι δυο αριθμοί που δίνει ο χρήστης.
-	int start;
+	// Βοηθητικός δείκτης
+	register unsigned short * length_ptr;
 		
+		
+	register unsigned int end; // Οι δυο αριθμοί που δίνει ο χρήστης.
+	unsigned int start;
+	register unsigned int max; // To ζητούμενο μέγιστο
+	
+	// Βήμαελέγχου μεγίστου
+	register int step;
+	
+	// Έλεγχος πλήθους ορισμάτων	
 	if(argc!=3){
 		
 		printf("Number of arguments error\n");
@@ -27,64 +34,109 @@ int main(int argc, char* argv[]){
 		
 	}
 	
+	// Μετατροπή σε ακέραιους
 	start=atoi(argv[1]);
 	end=atoi(argv[2]);
 	
-	// Δεσμεύουμε χώρο για τον πίνακα (μία θέση παραπάνω από το emd. Π.χ για end=1000 δεσμεύουμε 1001 θέσεις)
-	lengths = malloc((end+1)*sizeof(int));
+	// Αν ο τελικός αριθμός είναι περιττός, τον αυξάνουμε κατά 1
+	// (Το αποτέλεσμα δεν αλλάζει και βολεύει στις πράξεις)
+	if(end&1)
+		end++;
+
+	// Δεσμεύεται πίνακας για τα μήκη
+	lengths = malloc((end+1)*sizeof(short));
 	
-	if(lengths==NULL){
-		printf("No mem!\n");
-		return 0;
-	}
+	// Για i=1 το μήκος είναι 1 και για i=2 το μήκος είναι 2
+	lengths[1]=1;
+	lengths[2]=2;
 	
-	// Μηδενίζουμε όλες τις θέσεις του πίνακα lengths ()  
-	memset(lengths,0,(end+1)*sizeof(short));
+	// Αρχικοποίηση του i για την επαναληπτική εφαρμογή
+	i=3;
+	
+	// Η επαναληπτική εφαρμογή θα φτάσει μέχρι περιττό
+	end++;	
+	
+	while(i!=end){
+	// Στην αρχή του while, το i είναι περιττό.
+	
+		// Το Ν αρχικοποιείται σε αυτό...
+		N=i;
 		
-	if(start>end)
-		return 0;
+		// ...και ο μετρητής αρχικοποιείται στο 0.
+		count=0;
+		do{
+			
+			// Ο μετρητής αυξάνεται κατά 1
+			count++;	
+			
+			// Αν το Ν είναι περιττό, τότε τίθεται Ν=3*Ν+1 και συνεχίζει το loop
+			if(N&1){
+				N = (N << 1)+N+1;
+		
+				continue;				
+			}				
+			
+			// Διαφορετικά τίθεται Ν=Ν/2
+			N=N>>1;
+						
+		// Αν το Ν γίνει μικρότερο του i δεν χρειάζεται να προχωρήσουν οι υπολογισμοί
+		// γιατί το μήκος της "υπόλοιπης διαδρομής" είναι γνωστό.		
+		}while(N>i);
+		
+		// Προστίθεται το υπόλοιπο μήκος της διαδρομής και προκύπτει το μήκος για το i.
+		// Παράλληλα το i αυξάνεται κατά 1.
+		lengths[i++]=count+lengths[N];
+
+		// Το i τώρα είναι άρτιο. 
+		// Η διαδρομή του έχει μήκος κατά 1 μεγαλύτερο από το μήκος της διαδρομής του i/2 
+		lengths[i]=lengths[(i)>>1]+1;
+		
+		// Το i αυξάνεται κατα 1 και γίνεται πάλι περιττό.
+		i++;
+
+	}
+	// Αποκατάσταση του end
+	end--;
+	
+	// To μέγιστο μήκος θα ανήκει σε αριθμό σίγουρα μεγαλύτερο του end/3
+	i=end/3;
+	
+	// Aν όμως το start είναι ακόμα μεγαλύτερο τότε η εκκίνηση εντοπισμού του μεγίστου 
+	// μήκους θα γίνει από αυτό.  
+	if(start>i)
+		i=start;
+	
+	// Αν το i είναι άρτιο αυξάνεται κατα 1. Η εκκίνηση εντοπισμού συμφέρει να γίνει από 
+	// περιττό.
+	if(!(i&1))
+		i++;
+	
+	length_ptr=lengths+i;	
+	lengths+=end+1;	
 	max=0;
 	
-	for(i=1;i<=end;i+=2){
+	// Για μεγάλο end ελέγχονται μόνο οι περιττοί
+	if(end>10000)
+		step=2;
+	else
+		step=1;
+
+	while(length_ptr!=lengths){
 		
-		N=i;
-		count=1;
-		while(N!=1){
+		if(*length_ptr>max)
+			max=*length_ptr;
+		
+		length_ptr+=step;
 			
-			// Συμπλήρωση κώδικα: Στην αρχή κάθε γύρου, ελέγχεται αν έχει υπολογιστεί ήδη το μήκος Ν
-			if(N<=end){
-				length=lengths[N];
-				if(length!=0){
-					// Aν έχει υπολογιστεί ήδη, τότε απλά προστίθεται στο τρέχον, αφαιρείται το 1 και το Loop σπάει 
-					count+=length-1;
-					break;		
-					
-				}
-			}
-						
-			if((N&1)==1)
-				N=N+(N<<1)+1;
-			else
-				N=N>>1;
-			count=count+1;
-			
-		}
-		
-		// Κάθε φορά που υπολογίζεται ένα νέο μήκος ενημερώνεται ο πίνακας 
-		lengths[i]=count;
-		
-		if(count>max)
-			max=count;
-				
-		count=lengths[(i+1)>>1]+1;
-		
-		lengths[i+1]=count;
-		
-		if(count>max)
-			max=count;
-		
 	}
+	
+	// Τυπώνεται το μέγιστο μήκος
 	printf("%d\n",max);
+	
+	// Απελευθέρωση μνήμης
+	lengths-=end+1;
+	free(lengths);
+	
 	return 0;
 	
 }
